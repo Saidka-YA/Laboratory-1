@@ -3,10 +3,12 @@
 
 using namespace std;
 
+double S; // глобальная переменная площади
+
 int main() {
     setlocale(LC_ALL, "rus");
     double a, b, c, d;
-    double h, P, S, midLine;
+    double h, P;
 
     cout << "Введите сторону a: ";
     cin >> a;
@@ -90,16 +92,11 @@ int main() {
     }
 
     if (valid) {
-        // Вычисляем среднюю линию трапеции
-        midLine = (a + b) / 2;
-        
-        // Вычисляем площадь (формула Герона для трапеции)
-        double p = (a + b + c + d) / 2;
-        S = ((a + b) / abs(b - a)) * sqrt((p - a) * (p - b) * (p - a - c) * (p - a - d));
+        // Защита от отрицательного подкоренного через fmax
+        S = ((a + b) / 2) * sqrt(fmax(0.0, c * c - (((b - a) * (b - a) + c * c - d * d) / (2 * (b - a))) * (((b - a) * (b - a) + c * c - d * d) / (2 * (b - a)))));
     }
     else {
         S = -1.0; // признак ошибки
-        midLine = -1.0;
     }
 
     int choice;
@@ -107,7 +104,7 @@ int main() {
         cout << "\nЧто ищем?" << endl;
         cout << "1 - Периметр" << endl;
         cout << "2 - Площадь" << endl;
-        cout << "3 - Средняя линия" << endl;
+        cout << "3 - Высота" << endl;
         cout << "0 - Выход" << endl;
         cout << "Ваш выбор: ";
         cin >> choice;
@@ -129,15 +126,16 @@ int main() {
                 cout << "Площадь равна = " << S << endl;
             }
             else {
-                cout << "Площадь не может быть вычислена. Некорректные стороны." << endl;
+                cout << "Площадь не может быть вычислена. НЕкорректные стороны." << endl;
             }
             break;
         case 3:
-            if (valid && midLine >= 0) {
-                cout << "Средняя линия равна = " << midLine << endl;
+            if (valid && S >= 0 && (a + b) != 0) {
+                h = (2 * S) / (a + b);
+                cout << "Высота равна = " << h << endl;
             }
             else {
-                cout << "Средняя линия не может быть вычислена." << endl;
+                cout << "Высота не может быть вычислена." << endl;
             }
             break;
         case 0:
